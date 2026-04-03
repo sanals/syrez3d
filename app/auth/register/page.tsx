@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useAuth } from '@/lib/auth-context'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -70,8 +71,9 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md">
         {/* Header */}
-        <div className="text-center mb-8">
-          <Link href="/">
+        <div className="text-center mb-8 flex flex-col items-center">
+          <Link href="/" className="flex flex-col items-center group">
+            <Image src="/icons/icon-transparent.png" alt="Syrez Logo" width={48} height={48} className="mb-3 object-contain group-hover:scale-105 transition-transform" />
             <h1 className="text-3xl font-bold font-serif text-foreground mb-2">
               Syrez
             </h1>

@@ -7,6 +7,7 @@ import { AuthProvider } from '@/lib/auth-context'
 import { WishlistProvider } from '@/lib/wishlist-context'
 import { OrdersProvider } from '@/lib/orders-context'
 import { CartProvider } from '@/lib/cart-context'
+import { ThemeProvider } from '@/components/theme-provider'
 
 const crimsonText = Crimson_Text({ 
   weight: ['400', '600', '700'],
@@ -22,23 +23,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Syrez — Premium 3D Printed Designer Toys & Materials',
   description: 'Handcrafted 3D printed designer toys and premium materials. Precision-engineered, artisan quality.',
-
   icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
+    icon: '/icons/icon-light.png',
+    apple: '/icons/apple-icon.png',
   },
 }
 
@@ -56,18 +43,25 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${crimsonText.variable} ${inter.variable}`}>
+    <html lang="en" className={`${crimsonText.variable} ${inter.variable}`} suppressHydrationWarning>
       <body className="font-sans antialiased bg-background text-foreground">
-        <AuthProvider>
-          <OrdersProvider>
-            <WishlistProvider>
-              <CartProvider>
-                {children}
-              </CartProvider>
-            </WishlistProvider>
-          </OrdersProvider>
-        </AuthProvider>
-        <Toaster position="top-right" richColors closeButton />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <OrdersProvider>
+              <WishlistProvider>
+                <CartProvider>
+                  {children}
+                </CartProvider>
+              </WishlistProvider>
+            </OrdersProvider>
+          </AuthProvider>
+          <Toaster position="top-right" richColors closeButton />
+        </ThemeProvider>
         <Analytics />
       </body>
     </html>

@@ -1,9 +1,11 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { ShoppingBag, User, LogOut } from 'lucide-react'
 import { useCart } from '@/lib/cart-context'
 import { useAuth } from '@/lib/auth-context'
+import { ThemeToggle } from '@/components/theme-toggle'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,8 +26,8 @@ export function Header({ onCartClick }: HeaderProps) {
     <header className="sticky top-0 z-40 bg-background/95 backdrop-blur border-b border-border">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-accent to-accent/70 rounded-sm"></div>
+        <Link href="/" className="flex items-center gap-2 group">
+          <Image src="/icons/icon-transparent.png" alt="Syrez Logo" width={32} height={32} className="object-contain group-hover:opacity-80 transition-opacity" />
           <span className="font-serif text-xl font-bold text-foreground">Syrez</span>
         </Link>
 
@@ -43,7 +45,9 @@ export function Header({ onCartClick }: HeaderProps) {
         </nav>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <ThemeToggle />
+          
           {/* Cart Button */}
           <button
             onClick={onCartClick}
