@@ -25,6 +25,8 @@ export interface Order {
   estimatedDelivery?: number
   trackingNumber?: string
   notes?: string
+  userName?: string
+  userEmail?: string
 }
 
 interface OrdersContextType {
@@ -80,6 +82,8 @@ export function OrdersProvider({ children }: { children: ReactNode }) {
       const newOrder: Order = {
         id: orderId,
         userId: user.uid,
+        userName: user.displayName || user.email?.split('@')[0] || 'Unknown',
+        userEmail: user.email || 'Unknown',
         items,
         total,
         status: 'pending',

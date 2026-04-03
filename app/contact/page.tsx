@@ -27,7 +27,7 @@ export default function Contact() {
             </div>
           </a>
 
-          <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-6 border border-border rounded-xl hover:bg-muted/50 transition-colors">
+          <a href="https://wa.me/918089590649" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-6 border border-border rounded-xl hover:bg-muted/50 transition-colors">
             <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent">
               <MessageCircle className="w-5 h-5" />
             </div>

@@ -206,7 +206,7 @@ export default function ProductDetail() {
 
                 {/* WhatsApp Inquiry */}
                 <a
-                  href={`https://wa.me/?text=Hi, I'm interested in ${product.name}. Price: $${product.price.toFixed(2)}`}
+                  href={`https://wa.me/918089590649?text=Hi, I'm interested in ${product.name}. Price: $${product.price.toFixed(2)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full border border-border text-foreground py-3 rounded-lg font-medium hover:bg-muted transition-colors text-center"

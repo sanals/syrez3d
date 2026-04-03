@@ -3,6 +3,12 @@
 import { X, Minus, Plus, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import { useCart } from '@/lib/cart-context'
+import { useAuth } from '@/lib/auth-context'
+import { useOrders } from '@/lib/orders-context'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { toast } from 'sonner'
+import { Loader2 } from 'lucide-react'
 
 interface CartDrawerProps {
   isOpen: boolean
@@ -10,7 +16,51 @@ interface CartDrawerProps {
 }
 
 export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
-  const { items, removeItem, updateQuantity, total } = useCart()
+  const { items, removeItem, updateQuantity, total, clearCart } = useCart()
+  const { user } = useAuth()
+  const { createOrder } = useOrders()
+  const router = useRouter()
+  const [isCheckingOut, setIsCheckingOut] = useState(false)
+
+  const handleCheckout = async () => {
+    if (!user) {
+      toast.error('Please sign in to place an order')
+      onClose()
+      router.push('/auth/login?redirect=/shop')
+      return
+    }
+
+    if (items.length === 0) return
+
+    setIsCheckingOut(true)
+    try {
+      // 1. Format items for the order context
+      const orderItems = items.map(item => ({
+        productId: item.product.id,
+        productName: item.product.name,
+        quantity: item.quantity,
+        price: item.product.price
+      }))
+
+      // 2. Generate the Order in Firebase
+      const orderId = await createOrder(orderItems, total)
+
+      // 3. Clear Cart locally & cloud
+      clearCart()
+
+      // 4. Redirect to WhatsApp with pre-filled message
+      const text = encodeURIComponent(`Hi Syrez! I'd like to complete my purchase. My Order ID is ${orderId}`)
+      window.open(`https://wa.me/918089590649?text=${text}`, '_blank')
+      
+      toast.success('Order drafted! Finalize payment via WhatsApp.')
+      onClose()
+    } catch (error) {
+      console.error('Checkout failed:', error)
+      toast.error('Failed to create order. Please try again.')
+    } finally {
+      setIsCheckingOut(false)
+    }
+  }
 
   return (
     <>
@@ -122,14 +172,20 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                   </span>
                 </div>
 
-                <a
-                  href={`https://wa.me/?text=I'm interested in purchasing from Syrez. Cart total: $${total.toFixed(2)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full bg-accent text-accent-foreground py-3 rounded-lg font-medium hover:bg-accent/90 transition-colors block text-center text-sm"
+                <button
+                  onClick={handleCheckout}
+                  disabled={isCheckingOut}
+                  className="w-full bg-accent text-accent-foreground py-3 rounded-lg font-medium hover:bg-accent/90 transition-colors flex items-center justify-center gap-2 text-sm"
                 >
-                  Inquire on WhatsApp
-                </a>
+                  {isCheckingOut ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Creating Order...
+                    </>
+                  ) : (
+                    'Checkout via WhatsApp'
+                  )}
+                </button>
 
                 <button
                   onClick={onClose}

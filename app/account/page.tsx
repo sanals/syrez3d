@@ -6,17 +6,27 @@ import { CartDrawer } from '@/components/cart-drawer'
 import { useAuth } from '@/lib/auth-context'
 import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Heart, Package, Settings, LogOut } from 'lucide-react'
+import { Heart, Package, Settings, LogOut, Loader2, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useWishlist } from '@/lib/wishlist-context'
+import { useOrders } from '@/lib/orders-context'
+import { products } from '@/lib/products'
+import { OrderTracker } from '@/components/order-tracker'
+import { ProductCard } from '@/components/product-card'
 
 export default function AccountPage() {
   const { user, userProfile, logout } = useAuth()
+  const { wishlistItems, isLoading: isWishlistLoading } = useWishlist()
+  const { orders, isLoading: isOrdersLoading } = useOrders()
   const router = useRouter()
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+
+  // Hydrate full products for wishlist
+  const wishlistProducts = products.filter(p => wishlistItems.includes(p.id))
 
   const handleLogout = async () => {
     setIsLoading(true)
@@ -104,31 +114,66 @@ export default function AccountPage() {
             <TabsContent value="wishlist" className="space-y-6">
               <div className="bg-card border border-border rounded-lg p-6">
                 <h2 className="text-lg font-semibold text-foreground mb-4">My Wishlist</h2>
-                <div className="text-center py-12">
-                  <Heart className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-20" />
-                  <p className="text-muted-foreground mb-4">Your wishlist is empty</p>
-                  <Link href="/shop">
-                    <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                      Continue Shopping
-                    </Button>
-                  </Link>
-                </div>
+                
+                {isWishlistLoading ? (
+                  <div className="flex justify-center py-12">
+                    <Loader2 className="w-8 h-8 animate-spin text-accent" />
+                  </div>
+                ) : wishlistProducts.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Heart className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-20" />
+                    <p className="text-muted-foreground mb-4">Your wishlist is empty</p>
+                    <Link href="/shop">
+                      <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                        Continue Shopping
+                      </Button>
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {wishlistProducts.map(product => (
+                      <ProductCard key={product.id} product={product} />
+                    ))}
+                  </div>
+                )}
               </div>
             </TabsContent>
 
             {/* Orders Tab */}
             <TabsContent value="orders" className="space-y-6">
               <div className="bg-card border border-border rounded-lg p-6">
-                <h2 className="text-lg font-semibold text-foreground mb-4">Order History</h2>
-                <div className="text-center py-12">
-                  <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-20" />
-                  <p className="text-muted-foreground mb-4">No orders yet</p>
-                  <Link href="/shop">
-                    <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                      Start Shopping
-                    </Button>
-                  </Link>
-                </div>
+                <h2 className="text-lg font-semibold text-foreground mb-6">Order History</h2>
+                
+                {isOrdersLoading ? (
+                  <div className="flex justify-center py-12">
+                    <Loader2 className="w-8 h-8 animate-spin text-accent" />
+                  </div>
+                ) : orders.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-20" />
+                    <p className="text-muted-foreground mb-4">No orders yet</p>
+                    <Link href="/shop">
+                      <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                        Start Shopping
+                      </Button>
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="space-y-8">
+                    {orders.map(order => (
+                      <div key={order.id} className="border border-border rounded-lg p-6 hover:shadow-sm transition-shadow">
+                        <OrderTracker order={order} />
+                        <div className="mt-4 flex justify-end">
+                          <Link href={`/track-order?id=${order.id}`}>
+                            <Button variant="outline" size="sm" className="gap-2">
+                              Full Details <ArrowRight className="w-4 h-4" />
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </TabsContent>
           </Tabs>
