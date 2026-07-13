@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Neumorphism Builder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Base Variables */
+        :root {
+            --neo-base: #E0E5EC;
+            --neo-dark-hex: #a3b1c6;
+            --neo-dark-rgb: 163, 177, 198;
+            --neo-light-hex: #ffffff;
+        }
+
+        body {
+            background-color: var(--neo-base);
+            font-family: 'IBM Plex Sans', sans-serif;
+            color: #334155;
+        }
+        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
+
+        /* Each row will have its own variables set by JS */
+        .option-row {
+            --accent: #3b82f6;
+            --accent-rgb: 59, 130, 246;
+            --shadow-color: rgba(59, 130, 246, 0.4); 
+        }
+
+        /* -----------------------------------------
+           Option 1: Monochromatic
+        ----------------------------------------- */
+        .opt-1-btn {
+            color: var(--accent);
+            box-shadow: 8px 8px 16px var(--shadow-color), -8px -8px 16px var(--neo-light-hex);
+        }
+        .opt-1-btn:active {
+            box-shadow: inset 8px 8px 16px var(--shadow-color), inset -8px -8px 16px var(--neo-light-hex);
+        }
+
+        /* -----------------------------------------
+           Option 2: Inset Accent Rim
+        ----------------------------------------- */
+        .opt-2-btn {
+            color: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 8px 8px 16px var(--shadow-color), -8px -8px 16px var(--neo-light-hex);
+        }
+        .opt-2-btn:active {
+            box-shadow: inset 8px 8px 16px var(--shadow-color), inset -8px -8px 16px var(--neo-light-hex);
+        }
+
+        /* -----------------------------------------
+           Option 3: Soft Tint
+        ----------------------------------------- */
+        .opt-3-btn {
+            color: var(--accent);
+            background-color: rgba(var(--accent-rgb), 0.1);
+            box-shadow: 8px 8px 16px var(--shadow-color), -8px -8px 16px var(--neo-light-hex);
+        }
+        .opt-3-btn:active {
+            box-shadow: inset 8px 8px 16px var(--shadow-color), inset -8px -8px 16px var(--neo-light-hex);
+        }
+
+        /* -----------------------------------------
+           Option 4: Solid Accent
+        ----------------------------------------- */
+        .opt-4-btn {
+            color: white;
+            background-color: var(--accent);
+            box-shadow: 8px 8px 16px var(--shadow-color), -8px -8px 16px var(--neo-light-hex);
+        }
+        .opt-4-btn:active {
+            box-shadow: inset 8px 8px 16px rgba(0,0,0,0.3), inset -8px -8px 16px rgba(255,255,255,0.3);
+        }
+
+        /* -----------------------------------------
+           Option 5: Volume + Colored Shadow
+        ----------------------------------------- */
+        .opt-5-btn {
+            color: white;
+            background-color: var(--accent);
+            box-shadow: 8px 8px 16px var(--shadow-color), -8px -8px 16px var(--neo-light-hex);
+        }
+        .opt-5-volume {
+            box-shadow: inset 4px 4px 8px rgba(255,255,255,0.3), inset -4px -4px 8px rgba(0,0,0,0.2);
+            transition: opacity 0.2s;
+        }
+        .opt-5-btn:active .opt-5-volume {
+            opacity: 0;
+        }
+        .opt-5-btn:active {
+            box-shadow: inset 8px 8px 16px rgba(0,0,0,0.3), inset -8px -8px 16px rgba(255,255,255,0.3);
+        }
+
+        /* Custom Toggle Switch styling */
+        .toggle-checkbox:checked { right: 0; border-color: #3b82f6; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #3b82f6; }
+    </style>
+</head>
+<body class="min-h-screen p-8 pb-32">
+
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-4xl font-bold mb-2">Interactive Neumorphism Builder</h1>
+        <p class="text-slate-500 mb-8">Customize the color and shadow physics for each option.</p>
+
+        <!-- Global Controls -->
+        <div class="bg-white/40 border border-white/60 p-6 rounded-3xl mb-12 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[8px_8px_16px_#a3b1c6,-8px_-8px_16px_#ffffff]">
+            <div>
+                <h3 class="font-display font-bold text-xl text-slate-800">Global Settings</h3>
+                <p class="text-sm text-slate-500">Apply to all buttons instantly.</p>
+                <div id="global-sync-warning" class="text-xs text-amber-600 font-semibold mt-2 opacity-0 transition-opacity bg-amber-50 px-2 py-1 rounded inline-block">
+                    ⚠️ Individual buttons have mixed settings
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-12">
+                <!-- Global Shadow Toggle & Opacity -->
+                <div class="flex flex-col items-center gap-3">
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm font-semibold text-slate-500">Normal</span>
+                        <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+                            <input type="checkbox" id="global-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 transition-all duration-300 left-0" checked/>
+                            <label for="global-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-slate-300 cursor-pointer transition-all duration-300"></label>
+                        </div>
+                        <span class="text-sm font-semibold text-accent-blue">Accent</span>
+                    </div>
+                    <div class="flex items-center gap-2 w-full max-w-[180px]">
+                        <input type="range" id="global-opacity" min="0" max="100" value="40" class="w-full h-1.5 bg-slate-300 rounded-lg appearance-none cursor-pointer accent-blue-500 hover:accent-blue-600 transition-all">
+                        <span id="global-opacity-val" class="text-xs font-mono font-bold w-10 text-right text-slate-600 bg-white/50 px-1 py-0.5 rounded">40%</span>
+                    </div>
+                </div>
+
+                <!-- Global Color Picker -->
+                <div class="flex items-center gap-3 bg-white/40 p-2 rounded-xl shadow-inner border border-white/50">
+                    <input type="color" id="global-color" value="#3b82f6" class="w-10 h-10 rounded-full cursor-pointer bg-transparent border-none p-0 shadow-sm">
+                    <input type="text" id="global-hex" value="#3b82f6" class="w-24 px-2 py-1 text-sm font-mono text-center rounded-lg border border-slate-300/50 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 uppercase" maxlength="7">
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid Header -->
+        <div class="grid grid-cols-12 gap-6 pb-4 border-b border-slate-300 mb-8 font-bold text-sm uppercase tracking-wider text-slate-400">
+            <div class="col-span-5">Button Style</div>
+            <div class="col-span-4 text-center">Shadow Type & Opacity</div>
+            <div class="col-span-3 text-center">Accent Color</div>
+        </div>
+
+        <div id="options-container" class="flex flex-col gap-12">
+            <!-- Rows injected by JS -->
+        </div>
+    </div>
+
+    <script>
+        function hexToRgb(hex) {
+            let r = parseInt(hex.slice(1, 3), 16);
+            let g = parseInt(hex.slice(3, 5), 16);
+            let b = parseInt(hex.slice(5, 7), 16);
+            return `${r}, ${g}, ${b}`;
+        }
+
+        const options = [
+            { id: 1, title: "Option 1: Monochromatic", desc: "Base color background, colored text.", class: "opt-1-btn bg-neo-base" },
+            { id: 2, title: "Option 2: Inset Accent Rim", desc: "Border colored with accent.", class: "opt-2-btn bg-neo-base border-2" },
+            { id: 3, title: "Option 3: Soft Tint", desc: "10% tinted background color.", class: "opt-3-btn" },
+            { id: 4, title: "Option 4: Solid + Colored Shadow", desc: "Solid background, no inner volume.", class: "opt-4-btn" },
+            { id: 5, title: "Option 5: Volume + Colored Shadow", desc: "Solid background + inner 3D volume highlights.", class: "opt-5-btn relative overflow-hidden", hasVolume: true },
+        ];
+
+        const container = document.getElementById('options-container');
+        const rowControllers = [];
+
+        options.forEach(opt => {
+            const row = document.createElement('div');
+            row.className = "option-row grid grid-cols-12 gap-6 items-center bg-[#E0E5EC] p-6 rounded-3xl shadow-[8px_8px_16px_#a3b1c6,-8px_-8px_16px_#ffffff]";
+            
+            let btnHTML = `
+                <button class="${opt.class} px-8 py-4 rounded-2xl font-bold transition-all flex items-center gap-3">
+                    ${opt.hasVolume ? '<div class="opt-' + opt.id + '-volume absolute inset-0 rounded-2xl"></div><span class="relative z-10 flex items-center gap-3">' : ''}
+                    <svg class="w-5 h-5 ${opt.hasVolume ? 'relative z-10' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                    Upload Model
+                    ${opt.hasVolume ? '</span>' : ''}
+                </button>
+            `;
+
+            row.innerHTML = `
+                <div class="col-span-5 flex flex-col items-start gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold">${opt.title}</h2>
+                        <p class="text-sm text-slate-500">${opt.desc}</p>
+                    </div>
+                    ${btnHTML}
+                </div>
+
+                <div class="col-span-4 flex flex-col justify-center items-center gap-3">
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm font-semibold text-slate-500">Normal</span>
+                        <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+                            <input type="checkbox" id="toggle-${opt.id}" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 transition-all duration-300 left-0" checked/>
+                            <label for="toggle-${opt.id}" class="toggle-label block overflow-hidden h-6 rounded-full bg-slate-300 cursor-pointer transition-all duration-300"></label>
+                        </div>
+                        <span class="text-sm font-semibold text-accent-blue">Accent</span>
+                    </div>
+                    <div class="flex items-center gap-2 w-full max-w-[180px]">
+                        <input type="range" id="opacity-${opt.id}" min="0" max="100" value="40" class="w-full h-1.5 bg-slate-300 rounded-lg appearance-none cursor-pointer accent-blue-500 hover:accent-blue-600 transition-all">
+                        <span id="opacity-val-${opt.id}" class="text-xs font-mono font-bold w-10 text-right text-slate-600 bg-white/50 px-1 py-0.5 rounded">40%</span>
+                    </div>
+                </div>
+
+                <div class="col-span-3 flex justify-center items-center">
+                    <div class="flex items-center gap-3 bg-white/40 p-2 rounded-xl shadow-inner border border-white/50">
+                        <input type="color" id="color-${opt.id}" value="#3b82f6" class="w-10 h-10 rounded-full cursor-pointer bg-transparent border-none p-0 shadow-sm">
+                        <input type="text" id="hex-${opt.id}" value="#3b82f6" class="w-24 px-2 py-1 text-sm font-mono text-center rounded-lg border border-slate-300/50 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 uppercase" maxlength="7">
+                    </div>
+                </div>
+            `;
+            container.appendChild(row);
+
+            const toggle = row.querySelector(`#toggle-${opt.id}`);
+            const colorPicker = row.querySelector(`#color-${opt.id}`);
+            const hexInput = row.querySelector(`#hex-${opt.id}`);
+            const opacitySlider = row.querySelector(`#opacity-${opt.id}`);
+            const opacityVal = row.querySelector(`#opacity-val-${opt.id}`);
+
+            function updateStyles(source) {
+                if (source === 'hexInput') {
+                    let val = hexInput.value.trim();
+                    if (/^#[0-9A-Fa-f]{6}$/.test(val)) { colorPicker.value = val; }
+                } else if (source === 'colorPicker' || source === 'global') {
+                    hexInput.value = colorPicker.value.toUpperCase();
+                }
+
+                if (source === 'toggle' && !toggle.checked) {
+                    opacitySlider.value = 100; // Reset to 100% when switched to Normal
+                } else if (source === 'toggle' && toggle.checked) {
+                    opacitySlider.value = 40; // Default to 40% when switched to Accent
+                }
+
+                const opVal = opacitySlider.value;
+                opacityVal.textContent = opVal + '%';
+                const opacityDecimal = (opVal / 100).toFixed(2);
+
+                const hex = colorPicker.value;
+                const rgb = hexToRgb(hex);
+                
+                row.style.setProperty('--accent', hex);
+                row.style.setProperty('--accent-rgb', rgb);
+
+                if (toggle.checked) {
+                    row.style.setProperty('--shadow-color', `rgba(${rgb}, ${opacityDecimal})`); 
+                } else {
+                    row.style.setProperty('--shadow-color', `rgba(163, 177, 198, ${opacityDecimal})`); // Normal uses adjustable opacity now
+                }
+
+                if(source !== 'global' && source !== 'init') {
+                    checkGlobalSync();
+                }
+            }
+
+            toggle.addEventListener('change', () => updateStyles('toggle'));
+            colorPicker.addEventListener('input', () => updateStyles('colorPicker'));
+            hexInput.addEventListener('input', () => updateStyles('hexInput'));
+            opacitySlider.addEventListener('input', () => updateStyles('slider'));
+            
+            rowControllers.push({
+                toggle, colorPicker, hexInput, opacitySlider, updateStyles
+            });
+
+            updateStyles('init');
+        });
+
+        // Global Sync Logic
+        const globalToggle = document.getElementById('global-toggle');
+        const globalOpacity = document.getElementById('global-opacity');
+        const globalOpacityVal = document.getElementById('global-opacity-val');
+        const globalColor = document.getElementById('global-color');
+        const globalHex = document.getElementById('global-hex');
+        const syncWarning = document.getElementById('global-sync-warning');
+
+        function applyGlobal(source) {
+            if (source === 'hexInput') {
+                let val = globalHex.value.trim();
+                if (/^#[0-9A-Fa-f]{6}$/.test(val)) { globalColor.value = val; }
+            } else if (source === 'colorPicker') {
+                globalHex.value = globalColor.value.toUpperCase();
+            }
+            
+            if (source === 'toggle' && !globalToggle.checked) {
+                globalOpacity.value = 100;
+            } else if (source === 'toggle' && globalToggle.checked) {
+                globalOpacity.value = 40;
+            }
+
+            globalOpacityVal.textContent = globalOpacity.value + '%';
+
+            // Apply to all rows
+            rowControllers.forEach(row => {
+                row.toggle.checked = globalToggle.checked;
+                row.opacitySlider.value = globalOpacity.value;
+                row.colorPicker.value = globalColor.value;
+                row.updateStyles('global');
+            });
+            checkGlobalSync();
+        }
+
+        function checkGlobalSync() {
+            let isSynced = true;
+            rowControllers.forEach(row => {
+                if (row.toggle.checked !== globalToggle.checked ||
+                    row.opacitySlider.value !== globalOpacity.value ||
+                    row.colorPicker.value !== globalColor.value) {
+                    isSynced = false;
+                }
+            });
+            syncWarning.style.opacity = isSynced ? '0' : '1';
+        }
+
+        globalToggle.addEventListener('change', () => applyGlobal('toggle'));
+        globalOpacity.addEventListener('input', () => applyGlobal('slider'));
+        globalColor.addEventListener('input', () => applyGlobal('colorPicker'));
+        globalHex.addEventListener('input', () => applyGlobal('hexInput'));
+
+        checkGlobalSync();
+
+    </script>
+</body>
+</html>
