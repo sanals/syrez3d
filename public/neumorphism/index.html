@@ -108,8 +108,8 @@
         <p class="text-slate-500 mb-8">Customize the color and shadow physics for each option.</p>
 
         <!-- Global Controls -->
-        <div class="bg-white/40 border border-white/60 p-6 rounded-3xl mb-12 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[8px_8px_16px_#a3b1c6,-8px_-8px_16px_#ffffff]">
-            <div>
+        <div class="bg-white/40 border border-white/60 p-6 rounded-3xl mb-12 flex flex-col md:flex-row items-center md:justify-between gap-6 shadow-[8px_8px_16px_#a3b1c6,-8px_-8px_16px_#ffffff]">
+            <div class="w-full text-center md:text-left">
                 <h3 class="font-display font-bold text-xl text-slate-800">Global Settings</h3>
                 <p class="text-sm text-slate-500">Apply to all buttons instantly.</p>
                 <div id="global-sync-warning" class="text-xs text-amber-600 font-semibold mt-2 opacity-0 transition-opacity bg-amber-50 px-2 py-1 rounded inline-block">
@@ -117,7 +117,7 @@
                 </div>
             </div>
             
-            <div class="flex items-center gap-12">
+            <div class="flex flex-col md:flex-row items-center gap-6 md:gap-12 w-full md:w-auto">
                 <!-- Global Shadow Toggle & Opacity -->
                 <div class="flex flex-col items-center gap-3">
                     <div class="flex items-center gap-3">
@@ -143,10 +143,10 @@
         </div>
 
         <!-- Grid Header -->
-        <div class="grid grid-cols-12 gap-6 pb-4 border-b border-slate-300 mb-8 font-bold text-sm uppercase tracking-wider text-slate-400">
-            <div class="col-span-5">Button Style</div>
-            <div class="col-span-4 text-center">Shadow Type & Opacity</div>
-            <div class="col-span-3 text-center">Accent Color</div>
+        <div class="hidden md:grid grid-cols-12 gap-6 pb-4 border-b border-slate-300 mb-8 font-bold text-sm uppercase tracking-wider text-slate-400">
+            <div class="col-span-12 md:col-span-5">Button Style</div>
+            <div class="col-span-12 md:col-span-4 text-center">Shadow Type & Opacity</div>
+            <div class="col-span-12 md:col-span-3 text-center">Accent Color</div>
         </div>
 
         <div id="options-container" class="flex flex-col gap-12">
@@ -178,7 +178,7 @@
 
         options.forEach(opt => {
             const row = document.createElement('div');
-            row.className = "option-row grid grid-cols-12 gap-6 items-center bg-[#E0E5EC] p-6 rounded-3xl shadow-[8px_8px_16px_#a3b1c6,-8px_-8px_16px_#ffffff]";
+            row.className = "option-row grid grid-cols-1 md:grid-cols-12 gap-8 items-center bg-[#E0E5EC] p-6 rounded-3xl shadow-[8px_8px_16px_#a3b1c6,-8px_-8px_16px_#ffffff]";
             
             let btnHTML = `
                 <button class="${opt.class} px-8 py-4 rounded-2xl font-bold transition-all flex items-center gap-3">
@@ -203,16 +203,18 @@
             }
 
             row.innerHTML = `
-                <div class="col-span-5 flex flex-col items-start gap-4 w-full">
+                <div class="col-span-1 md:col-span-5 flex flex-col items-center md:items-start text-center md:text-left gap-4 w-full pb-4 md:pb-0">
                     <div class="w-full">
                         <h2 class="text-xl font-bold">${opt.title}</h2>
                         <p class="text-sm text-slate-500 mb-2">${opt.desc}</p>
                         ${extraHTML}
                     </div>
-                    ${btnHTML}
+                    <div class="mt-2 w-full flex justify-center md:justify-start">
+                        ${btnHTML}
+                    </div>
                 </div>
 
-                <div class="col-span-4 flex flex-col justify-center items-center gap-3">
+                <div class="col-span-1 md:col-span-4 flex flex-col justify-center items-center gap-3 w-full border-t border-slate-300/50 pt-6 md:border-t-0 md:pt-0">
                     <div class="flex items-center gap-3">
                         <span class="text-sm font-semibold text-slate-500">Normal</span>
                         <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
@@ -227,7 +229,7 @@
                     </div>
                 </div>
 
-                <div class="col-span-3 flex justify-center items-center">
+                <div class="col-span-1 md:col-span-3 flex justify-center items-center w-full pt-4 md:pt-0">
                     <div class="flex items-center gap-3 bg-white/40 p-2 rounded-xl shadow-inner border border-white/50">
                         <input type="color" id="color-${opt.id}" value="#3b82f6" class="w-10 h-10 rounded-full cursor-pointer bg-transparent border-none p-0 shadow-sm">
                         <input type="text" id="hex-${opt.id}" value="#3b82f6" class="w-24 px-2 py-1 text-sm font-mono text-center rounded-lg border border-slate-300/50 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 uppercase" maxlength="7">
