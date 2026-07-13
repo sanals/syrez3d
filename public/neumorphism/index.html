@@ -46,6 +46,7 @@
         .opt-2-btn {
             color: var(--accent);
             border-color: var(--accent);
+            border-width: var(--opt2-border-width, 2px);
             box-shadow: 8px 8px 16px var(--shadow-color), -8px -8px 16px var(--neo-light-hex);
         }
         .opt-2-btn:active {
@@ -57,7 +58,7 @@
         ----------------------------------------- */
         .opt-3-btn {
             color: var(--accent);
-            background-color: rgba(var(--accent-rgb), 0.1);
+            background-color: rgba(var(--accent-rgb), var(--opt3-bg-opacity, 0.1));
             box-shadow: 8px 8px 16px var(--shadow-color), -8px -8px 16px var(--neo-light-hex);
         }
         .opt-3-btn:active {
@@ -85,7 +86,7 @@
             box-shadow: 8px 8px 16px var(--shadow-color), -8px -8px 16px var(--neo-light-hex);
         }
         .opt-5-volume {
-            box-shadow: inset 4px 4px 8px rgba(255,255,255,0.3), inset -4px -4px 8px rgba(0,0,0,0.2);
+            box-shadow: inset 4px 4px 8px rgba(255,255,255,var(--opt5-vol-light, 0.3)), inset -4px -4px 8px rgba(0,0,0,var(--opt5-vol-dark, 0.2));
             transition: opacity 0.2s;
         }
         .opt-5-btn:active .opt-5-volume {
@@ -163,10 +164,13 @@
 
         const options = [
             { id: 1, title: "Option 1: Monochromatic", desc: "Base color background, colored text.", class: "opt-1-btn bg-neo-base" },
-            { id: 2, title: "Option 2: Inset Accent Rim", desc: "Border colored with accent.", class: "opt-2-btn bg-neo-base border-2" },
-            { id: 3, title: "Option 3: Soft Tint", desc: "10% tinted background color.", class: "opt-3-btn" },
+            { id: 2, title: "Option 2: Inset Accent Rim", desc: "Border colored with accent.", class: "opt-2-btn bg-neo-base", 
+              extra: { label: 'Border Thickness', min: 1, max: 12, value: 2, unit: 'px', varName: '--opt2-border-width' } },
+            { id: 3, title: "Option 3: Soft Tint", desc: "Tinted background opacity.", class: "opt-3-btn",
+              extra: { label: 'Tint Opacity', min: 0, max: 100, value: 10, unit: '%', varName: '--opt3-bg-opacity', scale: 0.01 } },
             { id: 4, title: "Option 4: Solid + Colored Shadow", desc: "Solid background, no inner volume.", class: "opt-4-btn" },
-            { id: 5, title: "Option 5: Volume + Colored Shadow", desc: "Solid background + inner 3D volume highlights.", class: "opt-5-btn relative overflow-hidden", hasVolume: true },
+            { id: 5, title: "Option 5: Volume + Colored Shadow", desc: "Solid background + inner 3D volume highlights.", class: "opt-5-btn relative overflow-hidden", hasVolume: true,
+              extra: { label: 'Volume Intensity', min: 0, max: 100, value: 100, unit: '%', varName: '--opt5-vol-light', varName2: '--opt5-vol-dark', scale1: 0.003, scale2: 0.002 } },
         ];
 
         const container = document.getElementById('options-container');
@@ -185,11 +189,25 @@
                 </button>
             `;
 
+            let extraHTML = '';
+            if (opt.extra) {
+                extraHTML = `
+                    <div class="mt-2 pt-3 border-t border-slate-300/50 w-full flex flex-col gap-2">
+                        <div class="flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-wide">
+                            <span>${opt.extra.label}</span>
+                            <span id="extra-val-${opt.id}" class="font-mono bg-white/50 px-1 rounded">${opt.extra.value}${opt.extra.unit}</span>
+                        </div>
+                        <input type="range" id="extra-${opt.id}" min="${opt.extra.min}" max="${opt.extra.max}" value="${opt.extra.value}" class="w-full h-1.5 bg-slate-300 rounded-lg appearance-none cursor-pointer accent-blue-500 hover:accent-blue-600 transition-all">
+                    </div>
+                `;
+            }
+
             row.innerHTML = `
-                <div class="col-span-5 flex flex-col items-start gap-4">
-                    <div>
+                <div class="col-span-5 flex flex-col items-start gap-4 w-full">
+                    <div class="w-full">
                         <h2 class="text-xl font-bold">${opt.title}</h2>
-                        <p class="text-sm text-slate-500">${opt.desc}</p>
+                        <p class="text-sm text-slate-500 mb-2">${opt.desc}</p>
+                        ${extraHTML}
                     </div>
                     ${btnHTML}
                 </div>
@@ -264,6 +282,25 @@
             hexInput.addEventListener('input', () => updateStyles('hexInput'));
             opacitySlider.addEventListener('input', () => updateStyles('slider'));
             
+            const extraSlider = row.querySelector(`#extra-${opt.id}`);
+            const extraVal = row.querySelector(`#extra-val-${opt.id}`);
+            
+            if (extraSlider) {
+                extraSlider.addEventListener('input', () => {
+                    const val = parseInt(extraSlider.value);
+                    extraVal.textContent = val + opt.extra.unit;
+                    if (opt.extra.scale) {
+                        row.style.setProperty(opt.extra.varName, val * opt.extra.scale);
+                    } else if (opt.extra.varName2) {
+                        row.style.setProperty(opt.extra.varName, val * opt.extra.scale1);
+                        row.style.setProperty(opt.extra.varName2, val * opt.extra.scale2);
+                    } else {
+                        row.style.setProperty(opt.extra.varName, val + opt.extra.unit);
+                    }
+                });
+                extraSlider.dispatchEvent(new Event('input'));
+            }
+
             rowControllers.push({
                 toggle, colorPicker, hexInput, opacitySlider, updateStyles
             });
