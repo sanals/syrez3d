@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,20 +11,59 @@
             darkMode: 'class',
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
     <style>
+        /* 
+        ======================================================================
+        🤖 AI AGENT DOCUMENTATION - NEUMORPHISM DESIGN SYSTEM
+        ======================================================================
+        When extracting this design to a React/Next.js component:
+        
+        1. THEME VARIABLES: The variables in `:root` and `html.dark` must be 
+           placed in the global CSS (e.g. globals.css) or handled via styled-components/Tailwind config.
+           Do not hardcode these hex colors into components.
+           
+        2. BASE CLASSES: 
+           - Use `.neo-card` for static containers (cards, panels, modals).
+           - Use `.neo-panel` for the same effect (legacy alias).
+           - These classes use a DUAL-LAYER shadow:
+             - An outer soft glow (9px offset, 16px blur)
+             - An inner sharp rim (2px offset, 5px blur) for edge definition
+             
+        3. BUTTON VARIANTS:
+           - `.opt-1-btn`: Monochromatic (background matches global base)
+           - `.opt-2-btn`: Soft Tint (background is a tinted version of accent)
+           - `.opt-3-btn`: Inset Rim (has an inset border of accent color)
+           - `.opt-4-btn`: Solid Accent (background is solid accent color)
+           
+        4. BUTTON STATES: 
+           All buttons require the `:active` pseudo-class for the pressed 
+           neumorphic state (swaps drop shadows for inset shadows).
+           
+        5. DYNAMIC VARIABLES: 
+           In React, pass `--accent`, `--accent-rgb`, and `--shadow-color` 
+           as inline styles to the button container to change colors dynamically.
+        ======================================================================
+        */
+
         /* Base Variables */
         :root {
             --neo-base: #E0E5EC;
-            --neo-dark-rgb: 163, 177, 198; /* #a3b1c6 */
+            --neo-dark-rgb: 163, 177, 198;
+            /* #a3b1c6 */
             --neo-light-hex: #ffffff;
             --text-main: #334155;
         }
 
         html.dark {
-            --neo-base: #1e293b; /* slate-800 */
-            --neo-dark-rgb: 15, 23, 42; /* slate-900 */
-            --neo-light-hex: #334155; /* slate-700 */
+            --neo-base: #1e293b;
+            /* slate-800 */
+            --neo-dark-rgb: 15, 23, 42;
+            /* slate-900 */
+            --neo-light-hex: #334155;
+            /* slate-700 */
             --text-main: #f8fafc;
         }
 
@@ -33,22 +73,28 @@
             color: var(--text-main);
             transition: background-color 0.3s, color 0.3s;
         }
-        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Space Grotesk', sans-serif;
+        }
 
         /* Each row will have its own variables set by JS */
         .option-row {
             --accent: #3b82f6;
             --accent-rgb: 59, 130, 246;
-            --shadow-color: rgba(59, 130, 246, 0.4); 
+            --shadow-color: rgba(59, 130, 246, 0.4);
         }
 
         /* Neumorphic base classes replacing hardcoded Tailwind arbitary values */
         .neo-panel {
-            box-shadow: 8px 8px 16px rgba(var(--neo-dark-rgb), 1), -8px -8px 16px var(--neo-light-hex);
+            box-shadow: 9px 9px 16px rgba(var(--neo-dark-rgb), 1), -9px -9px 16px var(--neo-light-hex), 2px 2px 5px rgba(var(--neo-dark-rgb), 0.5), -2px -2px 5px var(--neo-light-hex);
         }
+
         .neo-card {
             background-color: var(--neo-base);
-            box-shadow: 8px 8px 16px rgba(var(--neo-dark-rgb), 1), -8px -8px 16px var(--neo-light-hex);
+            box-shadow: 9px 9px 16px rgba(var(--neo-dark-rgb), 1), -9px -9px 16px var(--neo-light-hex), 2px 2px 5px rgba(var(--neo-dark-rgb), 0.5), -2px -2px 5px var(--neo-light-hex);
         }
 
         /* -----------------------------------------
@@ -56,10 +102,11 @@
         ----------------------------------------- */
         .opt-1-btn {
             color: var(--accent);
-            box-shadow: 8px 8px 16px var(--shadow-color), -8px -8px 16px var(--neo-light-hex);
+            box-shadow: 9px 9px 16px var(--shadow-color), -9px -9px 16px var(--neo-light-hex), 2px 2px 5px var(--shadow-color), -2px -2px 5px var(--neo-light-hex);
         }
+
         .opt-1-btn:active {
-            box-shadow: inset 8px 8px 16px var(--shadow-color), inset -8px -8px 16px var(--neo-light-hex);
+            box-shadow: inset 9px 9px 16px var(--shadow-color), inset -9px -9px 16px var(--neo-light-hex), inset 2px 2px 5px var(--shadow-color), inset -2px -2px 5px var(--neo-light-hex);
         }
 
         /* -----------------------------------------
@@ -68,10 +115,11 @@
         .opt-2-btn {
             color: var(--accent);
             background-color: rgba(var(--accent-rgb), var(--opt2-bg-opacity, 0.1));
-            box-shadow: 8px 8px 16px var(--shadow-color), -8px -8px 16px var(--neo-light-hex);
+            box-shadow: 9px 9px 16px var(--shadow-color), -9px -9px 16px var(--neo-light-hex), 2px 2px 5px var(--shadow-color), -2px -2px 5px var(--neo-light-hex);
         }
+
         .opt-2-btn:active {
-            box-shadow: inset 8px 8px 16px var(--shadow-color), inset -8px -8px 16px var(--neo-light-hex);
+            box-shadow: inset 9px 9px 16px var(--shadow-color), inset -9px -9px 16px var(--neo-light-hex), inset 2px 2px 5px var(--shadow-color), inset -2px -2px 5px var(--neo-light-hex);
         }
 
         /* -----------------------------------------
@@ -79,16 +127,17 @@
         ----------------------------------------- */
         .opt-3-btn {
             color: var(--accent);
-            box-shadow: 
+            box-shadow:
                 inset 0 0 0 var(--opt3-border-width, 2px) var(--accent),
-                8px 8px 16px var(--shadow-color), 
-                -8px -8px 16px var(--neo-light-hex);
+                5px 5px 15px 2px var(--shadow-color),
+                -5px -5px 15px 2px var(--neo-light-hex);
         }
+
         .opt-3-btn:active {
-            box-shadow: 
+            box-shadow:
                 inset 0 0 0 var(--opt3-border-width, 2px) var(--accent),
-                inset 8px 8px 16px var(--shadow-color), 
-                inset -8px -8px 16px var(--neo-light-hex);
+                inset 9px 9px 16px var(--shadow-color),
+                inset -9px -9px 16px var(--neo-light-hex);
         }
 
         /* -----------------------------------------
@@ -97,87 +146,101 @@
         .opt-4-btn {
             color: white;
             background-color: var(--accent);
-            box-shadow: 8px 8px 16px var(--shadow-color), -8px -8px 16px var(--neo-light-hex);
-        }
-        .opt-4-btn:active {
-            box-shadow: inset 8px 8px 16px rgba(0,0,0,0.3), inset -8px -8px 16px rgba(0,0,0,0.3); /* fixed light highlight to be dark inside for dark modes */
+            box-shadow: 9px 9px 16px var(--shadow-color), -9px -9px 16px var(--neo-light-hex), 2px 2px 5px var(--shadow-color), -2px -2px 5px var(--neo-light-hex);
         }
 
-        /* -----------------------------------------
-           Option 5: Volume + Colored Shadow
-        ----------------------------------------- */
-        .opt-5-btn {
-            color: white;
-            background-color: var(--accent);
-            box-shadow: 8px 8px 16px var(--shadow-color), -8px -8px 16px var(--neo-light-hex);
-        }
-        .opt-5-volume {
-            box-shadow: inset 4px 4px 8px rgba(255,255,255,var(--opt5-vol-light, 0.3)), inset -4px -4px 8px rgba(0,0,0,var(--opt5-vol-dark, 0.2));
-            transition: opacity 0.2s;
-        }
-        .opt-5-btn:active .opt-5-volume {
-            opacity: 0;
-        }
-        .opt-5-btn:active {
-            box-shadow: inset 8px 8px 16px rgba(0,0,0,0.3), inset -8px -8px 16px rgba(0,0,0,0.3);
+        .opt-4-btn:active {
+            box-shadow: inset 9px 9px 16px rgba(0,0,0,0.3), inset -9px -9px 16px rgba(0,0,0,0.3);
+            /* fixed light highlight to be dark inside for dark modes */
         }
 
         /* Custom Toggle Switch styling */
-        .toggle-checkbox:checked { right: 0; border-color: #3b82f6; }
-        .toggle-checkbox:checked + .toggle-label { background-color: #3b82f6; }
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #3b82f6;
+        }
+
+        .toggle-checkbox:checked+.toggle-label {
+            background-color: #3b82f6;
+        }
     </style>
 </head>
+
 <body class="min-h-screen p-8 pb-32">
 
     <div class="max-w-6xl mx-auto">
         <div class="flex justify-between items-start mb-2">
             <h1 class="text-4xl font-bold">Interactive Neumorphism Builder</h1>
-            <button id="theme-toggle" class="neo-panel p-3 rounded-full text-slate-500 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
+            <button id="theme-toggle"
+                class="neo-panel p-3 rounded-full text-slate-500 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
                 <!-- Sun icon (shows in dark mode) -->
-                <svg id="theme-icon-light" class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                <svg id="theme-icon-light" class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+                    </path>
+                </svg>
                 <!-- Moon icon (shows in light mode) -->
-                <svg id="theme-icon-dark" class="w-6 h-6 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                <svg id="theme-icon-dark" class="w-6 h-6 block dark:hidden" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                    </path>
+                </svg>
             </button>
         </div>
         <p class="text-slate-500 dark:text-slate-400 mb-8">Customize the color and shadow physics for each option.</p>
 
         <!-- Global Controls -->
-        <div class="neo-panel bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/60 p-6 rounded-3xl mb-12 flex flex-col md:flex-row items-center md:justify-between gap-6">
+        <div
+            class="neo-panel bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700/60 p-6 rounded-3xl mb-12 flex flex-col md:flex-row items-center md:justify-between gap-6">
             <div class="w-full text-center md:text-left">
                 <h3 class="font-display font-bold text-xl text-slate-800 dark:text-white">Global Settings</h3>
                 <p class="text-sm text-slate-500 dark:text-slate-400">Apply to all buttons instantly.</p>
-                <div id="global-sync-warning" class="text-xs text-amber-600 dark:text-amber-400 font-semibold mt-2 opacity-0 transition-opacity bg-amber-50 dark:bg-amber-900/30 px-2 py-1 rounded inline-block">
+                <div id="global-sync-warning"
+                    class="text-xs text-amber-600 dark:text-amber-400 font-semibold mt-2 opacity-0 transition-opacity bg-amber-50 dark:bg-amber-900/30 px-2 py-1 rounded inline-block">
                     ⚠️ Individual buttons have mixed settings
                 </div>
             </div>
-            
+
             <div class="flex flex-col md:flex-row items-center gap-6 md:gap-12 w-full md:w-auto">
                 <!-- Global Shadow Toggle & Opacity -->
                 <div class="flex flex-col items-center gap-3">
                     <div class="flex items-center gap-3">
                         <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">Normal</span>
-                        <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
-                            <input type="checkbox" id="global-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white dark:bg-slate-200 border-4 appearance-none cursor-pointer z-10 transition-all duration-300 left-0" checked/>
-                            <label for="global-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-slate-300 dark:bg-slate-600 cursor-pointer transition-all duration-300"></label>
+                        <div
+                            class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+                            <input type="checkbox" id="global-toggle"
+                                class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white dark:bg-slate-200 border-4 appearance-none cursor-pointer z-10 transition-all duration-300 left-0"
+                                checked />
+                            <label for="global-toggle"
+                                class="toggle-label block overflow-hidden h-6 rounded-full bg-slate-300 dark:bg-slate-600 cursor-pointer transition-all duration-300"></label>
                         </div>
                         <span class="text-sm font-semibold text-blue-500">Accent</span>
                     </div>
                     <div class="flex items-center gap-2 w-full max-w-[180px]">
-                        <input type="range" id="global-opacity" min="0" max="100" value="40" class="w-full h-1.5 bg-slate-300 dark:bg-slate-600 rounded-lg appearance-none cursor-pointer accent-blue-500 hover:accent-blue-600 transition-all">
-                        <span id="global-opacity-val" class="text-xs font-mono font-bold w-10 text-right text-slate-600 dark:text-slate-300 bg-white/50 dark:bg-slate-800/50 px-1 py-0.5 rounded">40%</span>
+                        <input type="range" id="global-opacity" min="0" max="100" value="40"
+                            class="w-full h-1.5 bg-slate-300 dark:bg-slate-600 rounded-lg appearance-none cursor-pointer accent-blue-500 hover:accent-blue-600 transition-all">
+                        <span id="global-opacity-val"
+                            class="text-xs font-mono font-bold w-10 text-right text-slate-600 dark:text-slate-300 bg-white/50 dark:bg-slate-800/50 px-1 py-0.5 rounded">40%</span>
                     </div>
                 </div>
 
                 <!-- Global Color Picker -->
-                <div class="flex items-center gap-3 bg-white/40 dark:bg-slate-800/40 p-2 rounded-xl shadow-inner border border-white/50 dark:border-slate-700/50">
-                    <input type="color" id="global-color" value="#3b82f6" class="w-10 h-10 rounded-full cursor-pointer bg-transparent border-none p-0 shadow-sm">
-                    <input type="text" id="global-hex" value="#3b82f6" class="w-24 px-2 py-1 text-sm font-mono text-center rounded-lg border border-slate-300/50 dark:border-slate-600/50 bg-white dark:bg-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 uppercase text-slate-700 dark:text-slate-200" maxlength="7">
+                <div
+                    class="flex items-center gap-3 bg-white/40 dark:bg-slate-800/40 p-2 rounded-xl shadow-inner border border-white/50 dark:border-slate-700/50">
+                    <input type="color" id="global-color" value="#3b82f6"
+                        class="w-10 h-10 rounded-full cursor-pointer bg-transparent border-none p-0 shadow-sm">
+                    <input type="text" id="global-hex" value="#3b82f6"
+                        class="w-24 px-2 py-1 text-sm font-mono text-center rounded-lg border border-slate-300/50 dark:border-slate-600/50 bg-white dark:bg-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 uppercase text-slate-700 dark:text-slate-200"
+                        maxlength="7">
                 </div>
             </div>
         </div>
 
         <!-- Grid Header -->
-        <div class="hidden md:grid grid-cols-12 gap-6 pb-4 border-b border-slate-300 dark:border-slate-700 mb-8 font-bold text-sm uppercase tracking-wider text-slate-400 dark:text-slate-500">
+        <div
+            class="hidden md:grid grid-cols-12 gap-6 pb-4 border-b border-slate-300 dark:border-slate-700 mb-8 font-bold text-sm uppercase tracking-wider text-slate-400 dark:text-slate-500">
             <div class="col-span-12 md:col-span-5">Button Style</div>
             <div class="col-span-12 md:col-span-4 text-center">Shadow Type & Opacity</div>
             <div class="col-span-12 md:col-span-3 text-center">Accent Color</div>
@@ -192,7 +255,7 @@
         // Theme Switcher Logic
         const themeToggle = document.getElementById('theme-toggle');
         const html = document.documentElement;
-        
+
         themeToggle.addEventListener('click', () => {
             html.classList.toggle('dark');
         });
@@ -206,13 +269,15 @@
 
         const options = [
             { id: 1, title: "Option 1: Monochromatic", desc: "Base color background, colored text.", class: "opt-1-btn bg-[var(--neo-base)]" },
-            { id: 2, title: "Option 2: Soft Tint", desc: "Tinted background opacity.", class: "opt-2-btn",
-              extra: { label: 'Tint Opacity', min: 0, max: 100, value: 10, unit: '%', varName: '--opt2-bg-opacity', scale: 0.01 } },
-            { id: 3, title: "Option 3: Inset Accent Rim", desc: "Border colored with accent.", class: "opt-3-btn bg-[var(--neo-base)]", 
-              extra: { label: 'Border Thickness', min: 1, max: 12, value: 2, unit: 'px', varName: '--opt3-border-width' } },
-            { id: 4, title: "Option 4: Solid + Colored Shadow", desc: "Solid background, no inner volume.", class: "opt-4-btn" },
-            { id: 5, title: "Option 5: Volume + Colored Shadow", desc: "Solid background + inner 3D volume highlights.", class: "opt-5-btn relative overflow-hidden", hasVolume: true,
-              extra: { label: 'Volume Intensity', min: 0, max: 100, value: 100, unit: '%', varName: '--opt5-vol-light', varName2: '--opt5-vol-dark', scale1: 0.003, scale2: 0.002 } },
+            {
+                id: 2, title: "Option 2: Soft Tint", desc: "Tinted background opacity.", class: "opt-2-btn",
+                extra: { label: 'Tint Opacity', min: 0, max: 100, value: 10, unit: '%', varName: '--opt2-bg-opacity', scale: 0.01 }
+            },
+            {
+                id: 3, title: "Option 3: Inset Accent Rim", desc: "Border colored with accent.", class: "opt-3-btn bg-[var(--neo-base)]",
+                extra: { label: 'Border Thickness', min: 1, max: 12, value: 2, unit: 'px', varName: '--opt3-border-width' }
+            },
+            { id: 4, title: "Option 4: Solid + Colored Shadow", desc: "Solid background, no inner volume.", class: "opt-4-btn" }
         ];
 
         const container = document.getElementById('options-container');
@@ -221,7 +286,7 @@
         options.forEach(opt => {
             const row = document.createElement('div');
             row.className = "option-row neo-card grid grid-cols-1 md:grid-cols-12 gap-8 items-center p-6 rounded-3xl";
-            
+
             let btnHTML = `
                 <button class="${opt.class} px-8 py-4 rounded-2xl font-bold transition-all flex items-center gap-3">
                     ${opt.hasVolume ? '<div class="opt-' + opt.id + '-volume absolute inset-0 rounded-2xl"></div><span class="relative z-10 flex items-center gap-3">' : ''}
@@ -306,17 +371,17 @@
 
                 const hex = colorPicker.value;
                 const rgb = hexToRgb(hex);
-                
+
                 row.style.setProperty('--accent', hex);
                 row.style.setProperty('--accent-rgb', rgb);
 
                 if (toggle.checked) {
-                    row.style.setProperty('--shadow-color', `rgba(${rgb}, ${opacityDecimal})`); 
+                    row.style.setProperty('--shadow-color', `rgba(${rgb}, ${opacityDecimal})`);
                 } else {
                     row.style.setProperty('--shadow-color', `rgba(var(--neo-dark-rgb), ${opacityDecimal})`);
                 }
 
-                if(source !== 'global' && source !== 'init') {
+                if (source !== 'global' && source !== 'init') {
                     checkGlobalSync();
                 }
             }
@@ -325,10 +390,10 @@
             colorPicker.addEventListener('input', () => updateStyles('colorPicker'));
             hexInput.addEventListener('input', () => updateStyles('hexInput'));
             opacitySlider.addEventListener('input', () => updateStyles('slider'));
-            
+
             const extraSlider = row.querySelector(`#extra-${opt.id}`);
             const extraVal = row.querySelector(`#extra-val-${opt.id}`);
-            
+
             if (extraSlider) {
                 extraSlider.addEventListener('input', () => {
                     const val = parseInt(extraSlider.value);
@@ -367,7 +432,7 @@
             } else if (source === 'colorPicker') {
                 globalHex.value = globalColor.value.toUpperCase();
             }
-            
+
             if (source === 'toggle' && !globalToggle.checked) {
                 globalOpacity.value = 100;
             } else if (source === 'toggle' && globalToggle.checked) {
@@ -406,4 +471,5 @@
 
     </script>
 </body>
+
 </html>
